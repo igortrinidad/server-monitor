@@ -1,0 +1,1 @@
+{"version":3,"file":"pm2.d.ts","sourceRoot":"","sources":["../../src/monitors/pm2.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,cAAc,EAAE,MAAM,UAAU,CAAC;AAI1C,qBAAa,UAAU;IACf,eAAe,IAAI,OAAO,CAAC,cAAc,EAAE,CAAC;IAuB5C,UAAU,CAAC,OAAO,CAAC,EAAE,MAAM,EAAE,KAAK,GAAE,MAAY,GAAG,OAAO,CAAC,MAAM,CAAC;IAcxE,OAAO,CAAC,YAAY;CAerB"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"disk.d.ts","sourceRoot":"","sources":["../../src/monitors/disk.ts"],"names":[],"mappings":"AAGA,OAAO,EAAE,SAAS,EAAc,MAAM,UAAU,CAAC;AAIjD,qBAAa,WAAW;IACtB,OAAO,CAAC,SAAS,CAAW;gBAEhB,SAAS,GAAE,MAAM,EAAU;IAIjC,YAAY,IAAI,OAAO,CAAC,SAAS,CAAC;YAsB1B,gBAAgB;YAwBhB,mBAAmB;YAwBnB,aAAa;IA0B3B,OAAO,CAAC,mBAAmB;IAW3B,OAAO,CAAC,iBAAiB;IAuCzB,OAAO,CAAC,SAAS;CAoBlB"}

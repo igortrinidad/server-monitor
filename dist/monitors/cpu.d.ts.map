@@ -1,0 +1,1 @@
+{"version":3,"file":"cpu.d.ts","sourceRoot":"","sources":["../../src/monitors/cpu.ts"],"names":[],"mappings":"AAGA,OAAO,EAAE,QAAQ,EAAe,MAAM,UAAU,CAAC;AAIjD,qBAAa,UAAU;IACrB,OAAO,CAAC,gBAAgB,CAAgB;IAElC,WAAW,IAAI,OAAO,CAAC,QAAQ,CAAC;YAYxB,sBAAsB;YA0BtB,kBAAkB;IAuBhC,OAAO,CAAC,kBAAkB;CAoC3B"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"memory.d.ts","sourceRoot":"","sources":["../../src/monitors/memory.ts"],"names":[],"mappings":"AAGA,OAAO,EAAE,WAAW,EAAe,MAAM,UAAU,CAAC;AAIpD,qBAAa,aAAa;IAClB,cAAc,IAAI,OAAO,CAAC,WAAW,CAAC;YAiB9B,qBAAqB;IAuBnC,OAAO,CAAC,kBAAkB;CAoC3B"}
