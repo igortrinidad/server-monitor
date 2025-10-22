@@ -146,14 +146,7 @@ export const TEST_METRICS = {
     total: 500 * 1024 * 1024 * 1024, // 500GB
     used: 350 * 1024 * 1024 * 1024,  // 350GB
     free: 150 * 1024 * 1024 * 1024,  // 150GB
-    percentage: 70,
-    topFolders: [
-      {
-        path: '/System',
-        size: 100 * 1024 * 1024 * 1024, // 100GB
-        percentage: 20
-      }
-    ]
+    percentage: 70
   },
   pm2: [
     {

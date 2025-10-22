@@ -1,28 +1,23 @@
-import { DiskMonitor } from '../../src/monitors/disk';
-import { exec } from 'child_process';
-import * as os from 'os';
-import { promisify } from 'util';
-
-// Mock dependencies
+// Mock child_process
+const mockExecAsync = jest.fn();
 jest.mock('child_process');
-jest.mock('os');
-jest.mock('util');
+jest.mock('util', () => ({
+  promisify: () => mockExecAsync
+}));
 
-const mockExec = exec as jest.MockedFunction<typeof exec>;
+// Mock os
+jest.mock('os');
+
+import { DiskMonitor } from '../../src/monitors/disk';
+import * as os from 'os';
+
 const mockOs = os as jest.Mocked<typeof os>;
-const mockPromisify = promisify as jest.MockedFunction<typeof promisify>;
 
 describe('DiskMonitor', () => {
   let diskMonitor: DiskMonitor;
-  let mockExecAsync: jest.MockedFunction<any>;
 
   beforeEach(() => {
     diskMonitor = new DiskMonitor(['/']);
-    
-    // Mock execAsync function
-    mockExecAsync = jest.fn();
-    mockPromisify.mockReturnValue(mockExecAsync);
-    
     jest.clearAllMocks();
   });
 
@@ -30,28 +25,27 @@ describe('DiskMonitor', () => {
     it('should return correct disk usage for Unix systems', async () => {
       mockOs.platform.mockReturnValue('darwin');
       
-      // Mock df command output
-      const mockDfOutput = '/dev/disk1s1   500Gi  350Gi  150Gi  70% /';
+      // Mock df -B1 command output (returns bytes)
+      const mockDfOutput = '/dev/disk1s1 536870912000 375809638400 161061273600 70% /';
       
       mockExecAsync.mockResolvedValue({ stdout: mockDfOutput });
 
       const result = await diskMonitor.getDiskUsage();
 
-      expect(result.total).toBeGreaterThan(0);
-      expect(result.used).toBeGreaterThan(0);
-      expect(result.free).toBeGreaterThan(0);
-      expect(result.percentage).toBeGreaterThan(0);
-      expect(result.topFolders).toHaveLength(5); // Mock folders for macOS
-      expect(result.topFolders[0].path).toBe('/System');
+      expect(result.total).toBe(536870912000);
+      expect(result.used).toBe(375809638400);
+      expect(result.free).toBe(161061273600);
+      expect(result.percentage).toBeCloseTo(70, 1);
+      expect(result).not.toHaveProperty('topFolders');
     });
 
     it('should return correct disk usage for Windows systems', async () => {
       mockOs.platform.mockReturnValue('win32');
       
       // Mock wmic command output
-      const mockWmicOutput = \`FreeSpace=161061273600
+      const mockWmicOutput = `FreeSpace=161061273600
 
-Size=500107862016\`;
+Size=500107862016`;
 
       mockExecAsync.mockResolvedValue({ stdout: mockWmicOutput });
 
@@ -61,6 +55,7 @@ Size=500107862016\`;
       expect(result.free).toBe(161061273600);
       expect(result.used).toBe(500107862016 - 161061273600);
       expect(result.percentage).toBeCloseTo(67.8, 1);
+      expect(result).not.toHaveProperty('topFolders');
     });
 
     it('should handle exec command errors gracefully', async () => {
@@ -74,33 +69,37 @@ Size=500107862016\`;
         total: 0,
         used: 0,
         free: 0,
-        percentage: NaN, // 0/0 = NaN
-        topFolders: []
+        percentage: 0
       });
     });
 
-    it('should parse size strings correctly', async () => {
+    it('should handle zero division gracefully', async () => {
       mockOs.platform.mockReturnValue('linux');
       
-      const mockDfOutput = '/dev/sda1      1536Gi  819Gi  717Gi  53% /';
+      const mockDfOutput = '/dev/sda1 0 0 0 0% /';
       mockExecAsync.mockResolvedValue({ stdout: mockDfOutput });
 
       const result = await diskMonitor.getDiskUsage();
 
-      // Check that sizes were parsed correctly (Gi = GiB)
-      expect(result.total).toBeCloseTo(1536 * 1024 * 1024 * 1024, -6); // 1536GiB
-      expect(result.used).toBeCloseTo(819 * 1024 * 1024 * 1024, -6); // 819GiB
-      expect(result.free).toBeCloseTo(717 * 1024 * 1024 * 1024, -6); // 717GiB
+      expect(result.total).toBe(0);
+      expect(result.used).toBe(0);
+      expect(result.free).toBe(0);
+      expect(result.percentage).toBe(0);
     });
 
-    it('should return empty folders for unsupported platforms', async () => {
-      mockOs.platform.mockReturnValue('sunos' as any);
+    it('should parse byte values correctly from df -B1', async () => {
+      mockOs.platform.mockReturnValue('linux');
       
-      mockExecAsync.mockRejectedValue(new Error('Platform not supported'));
+      // Mock df -B1 output with byte values
+      const mockDfOutput = '/dev/sda1 1073741824000 536870912000 536870912000 50% /';
+      mockExecAsync.mockResolvedValue({ stdout: mockDfOutput });
 
       const result = await diskMonitor.getDiskUsage();
 
-      expect(result.topFolders).toEqual([]);
+      expect(result.total).toBe(1073741824000); // 1TB
+      expect(result.used).toBe(536870912000); // 500GB
+      expect(result.free).toBe(536870912000); // 500GB
+      expect(result.percentage).toBe(50);
     });
 
     it('should handle malformed df output', async () => {
@@ -114,26 +113,23 @@ Size=500107862016\`;
       expect(result.total).toBe(0);
       expect(result.used).toBe(0);
       expect(result.free).toBe(0);
+      expect(result.percentage).toBe(0);
     });
 
     it('should handle custom disk paths', () => {
       const customDiskMonitor = new DiskMonitor(['/home', '/var']);
       expect(customDiskMonitor).toBeInstanceOf(DiskMonitor);
     });
-  });
 
-  describe('parseSize', () => {
-    it('should parse size strings correctly', () => {
-      // Access private method for testing
-      const parseSize = (diskMonitor as any).parseSize.bind(diskMonitor);
+    it('should use correct df command for Unix systems', async () => {
+      mockOs.platform.mockReturnValue('linux');
       
-      expect(parseSize('100G')).toBe(107374182400); // 100 * 1024^3
-      expect(parseSize('100Gi')).toBe(107374182400); // 100 * 1024^3
-      expect(parseSize('1.5T')).toBe(1649267441664); // 1.5 * 1024^4
-      expect(parseSize('500M')).toBe(524288000); // 500 * 1024^2
-      expect(parseSize('2K')).toBe(2048); // 2 * 1024
-      expect(parseSize('100')).toBe(100); // bytes
-      expect(parseSize('invalid')).toBe(0);
+      const mockDfOutput = '/dev/sda1 1000000000000 500000000000 500000000000 50% /';
+      mockExecAsync.mockResolvedValue({ stdout: mockDfOutput });
+
+      await diskMonitor.getDiskUsage();
+
+      expect(mockExecAsync).toHaveBeenCalledWith('df -B1 / | tail -1');
     });
   });
 });

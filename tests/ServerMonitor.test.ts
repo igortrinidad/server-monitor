@@ -1,18 +1,18 @@
-import { ServerMonitor } from '../../src/ServerMonitor';
-import { MemoryMonitor } from '../../src/monitors/memory';
-import { CpuMonitor } from '../../src/monitors/cpu';
-import { DiskMonitor } from '../../src/monitors/disk';
-import { PM2Monitor } from '../../src/monitors/pm2';
-import { DatabaseManager } from '../../src/database/manager';
+import { ServerMonitor } from '../src/ServerMonitor';
+import { MemoryMonitor } from '../src/monitors/memory';
+import { CpuMonitor } from '../src/monitors/cpu';
+import { DiskMonitor } from '../src/monitors/disk';
+import { PM2Monitor } from '../src/monitors/pm2';
+import { DatabaseManager } from '../src/database/manager';
 import * as fs from 'fs';
 import * as path from 'path';
 
 // Mock all monitor classes
-jest.mock('../../src/monitors/memory');
-jest.mock('../../src/monitors/cpu');
-jest.mock('../../src/monitors/disk');
-jest.mock('../../src/monitors/pm2');
-jest.mock('../../src/database/manager');
+jest.mock('../src/monitors/memory');
+jest.mock('../src/monitors/cpu');
+jest.mock('../src/monitors/disk');
+jest.mock('../src/monitors/pm2');
+jest.mock('../src/database/manager');
 
 const MockedMemoryMonitor = MemoryMonitor as jest.MockedClass<typeof MemoryMonitor>;
 const MockedCpuMonitor = CpuMonitor as jest.MockedClass<typeof CpuMonitor>;
@@ -91,8 +91,7 @@ describe('ServerMonitor Integration Tests', () => {
       total: 500 * 1024 * 1024 * 1024,
       used: 350 * 1024 * 1024 * 1024,
       free: 150 * 1024 * 1024 * 1024,
-      percentage: 70,
-      topFolders: []
+      percentage: 70
     });
 
     mockPM2Monitor.getPM2Processes.mockResolvedValue([]);
@@ -231,7 +230,7 @@ describe('ServerMonitor Integration Tests', () => {
     it('should not stop if not running', async () => {
       await serverMonitor.stop();
       
-      expect(mockDatabaseManager.close).toHaveBeenCalled();
+      expect(mockDatabaseManager.close).not.toHaveBeenCalled();
     });
   });
 

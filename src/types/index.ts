@@ -24,7 +24,6 @@ export interface DiskUsage {
   used: number;
   free: number;
   percentage: number;
-  topFolders: FolderInfo[];
 }
 
 export interface ProcessInfo {

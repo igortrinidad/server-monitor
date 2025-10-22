@@ -76,7 +76,7 @@ async function testMonitor() {
       await monitor.stop();
       console.log('✅ Test completed successfully!');
       process.exit(0);
-    }, 15000);
+    }, 5000);
 
   } catch (error) {
     console.error('❌ Test failed:', error);
