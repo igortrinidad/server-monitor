@@ -43,6 +43,9 @@ describe('MemoryMonitor', () => {
         used: 12 * 1024 * 1024 * 1024,
         free: 4 * 1024 * 1024 * 1024,
         percentage: 75, // (12GB / 16GB) * 100
+        formatted_total: '16 GB',
+        formatted_used: '12 GB',
+        formatted_free: '4 GB',
         topProcesses: expect.any(Array)
       });
     });
@@ -63,6 +66,9 @@ chrome.exe,chrome.exe,536870912,1073741824,5678`;
       expect(result.used).toBe(12 * 1024 * 1024 * 1024);
       expect(result.free).toBe(4 * 1024 * 1024 * 1024);
       expect(result.percentage).toBe(75);
+      expect(result.formatted_total).toBe('16 GB');
+      expect(result.formatted_used).toBe('12 GB');
+      expect(result.formatted_free).toBe('4 GB');
       expect(Array.isArray(result.topProcesses)).toBe(true);
     });
 

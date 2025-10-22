@@ -78,6 +78,9 @@ describe('ServerMonitor Integration Tests', () => {
       used: 12 * 1024 * 1024 * 1024,
       free: 4 * 1024 * 1024 * 1024,
       percentage: 75,
+      formatted_total: '16 GB',
+      formatted_used: '12 GB',
+      formatted_free: '4 GB',
       topProcesses: []
     });
 
@@ -91,7 +94,10 @@ describe('ServerMonitor Integration Tests', () => {
       total: 500 * 1024 * 1024 * 1024,
       used: 350 * 1024 * 1024 * 1024,
       free: 150 * 1024 * 1024 * 1024,
-      percentage: 70
+      percentage: 70,
+      formatted_total: '500 GB',
+      formatted_used: '350 GB',
+      formatted_free: '150 GB'
     });
 
     mockPM2Monitor.getPM2Processes.mockResolvedValue([]);

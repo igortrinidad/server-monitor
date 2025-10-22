@@ -2,6 +2,7 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import * as os from 'os';
 import { DiskUsage } from '../types';
+import { formatBytes } from '../helpers/formatBytes';
 
 const execAsync = promisify(exec);
 
@@ -28,7 +29,10 @@ export class DiskMonitor {
       total: diskInfo.total,
       used: diskInfo.used,
       free: diskInfo.free,
-      percentage: Math.round(percentage * 100) / 100
+      percentage: Math.round(percentage * 100) / 100,
+      formatted_total: formatBytes(diskInfo.total),
+      formatted_used: formatBytes(diskInfo.used),
+      formatted_free: formatBytes(diskInfo.free)
     };
   }
 

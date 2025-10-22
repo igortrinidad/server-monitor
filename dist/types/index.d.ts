@@ -9,6 +9,9 @@ export interface MemoryUsage {
     used: number;
     free: number;
     percentage: number;
+    formatted_total: string;
+    formatted_used: string;
+    formatted_free: string;
     topProcesses: ProcessInfo[];
 }
 export interface CpuUsage {
@@ -21,6 +24,9 @@ export interface DiskUsage {
     used: number;
     free: number;
     percentage: number;
+    formatted_total: string;
+    formatted_used: string;
+    formatted_free: string;
 }
 export interface ProcessInfo {
     pid: number;

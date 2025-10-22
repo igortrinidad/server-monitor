@@ -21,7 +21,7 @@ async function testMonitor() {
   });
 
   monitor.on('memoryMetrics', (metrics) => {
-    console.log(`📊 Memory: ${metrics.percentage.toFixed(2)}% (${(metrics.used / 1024 / 1024 / 1024).toFixed(2)} GB used)`);
+    console.log(`📊 Memory: ${metrics.percentage.toFixed(2)}% (${metrics.formatted_used} used, ${metrics.formatted_free} free)`);
   });
 
   monitor.on('cpuMetrics', (metrics) => {
@@ -29,7 +29,7 @@ async function testMonitor() {
   });
 
   monitor.on('diskMetrics', (metrics) => {
-    console.log(`📊 Disk: ${metrics.percentage.toFixed(2)}% (${(metrics.free / 1024 / 1024 / 1024).toFixed(2)} GB free)`);
+    console.log(`📊 Disk: ${metrics.percentage.toFixed(2)}% (${metrics.formatted_used} used, ${metrics.formatted_free} free)`);
   });
 
   monitor.on('error', (error) => {
@@ -43,21 +43,14 @@ async function testMonitor() {
     // Test immediate data collection
     console.log('\n🔍 Testing immediate data collection...');
     const memory = await monitor.getMemoryUsage();
-    console.log(`Memory: ${memory.percentage.toFixed(2)}% used`);
+    console.log(`Memory: ${memory.percentage.toFixed(2)}% used (${memory.formatted_used} of ${memory.formatted_total})`);
     
     const cpu = await monitor.getCpuUsage();
     console.log(`CPU: ${cpu.percentage.toFixed(2)}% used`);
     
     const disk = await monitor.getDiskUsage();
-    console.log(`Disk: ${disk.percentage.toFixed(2)}% used (${(disk.free / 1024 / 1024 / 1024).toFixed(2)} GB free)`);
-    
-    if (disk.topFolders && disk.topFolders.length > 0) {
-      console.log('\n📁 Top disk usage by folders:');
-      disk.topFolders.slice(0, 5).forEach((folder, index) => {
-        const sizeGB = (folder.size / 1024 / 1024 / 1024).toFixed(2);
-        console.log(`   ${index + 1}. ${folder.path}: ${sizeGB} GB (${folder.percentage.toFixed(1)}%)`);
-      });
-    }
+    console.log(`Disk: ${disk.percentage.toFixed(2)}% used (${disk.formatted_used} of ${disk.formatted_total}, ${disk.formatted_free} free)`);
+  
 
     // Let it run for 15 seconds to collect some data
     setTimeout(async () => {

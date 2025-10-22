@@ -37,6 +37,7 @@ exports.MemoryMonitor = void 0;
 const os = __importStar(require("os"));
 const child_process_1 = require("child_process");
 const util_1 = require("util");
+const formatBytes_1 = require("../helpers/formatBytes");
 const execAsync = (0, util_1.promisify)(child_process_1.exec);
 class MemoryMonitor {
     async getMemoryUsage() {
@@ -50,6 +51,9 @@ class MemoryMonitor {
             used: usedMemory,
             free: freeMemory,
             percentage: Math.round(percentage * 100) / 100,
+            formatted_total: (0, formatBytes_1.formatBytes)(totalMemory),
+            formatted_used: (0, formatBytes_1.formatBytes)(usedMemory),
+            formatted_free: (0, formatBytes_1.formatBytes)(freeMemory),
             topProcesses
         };
     }

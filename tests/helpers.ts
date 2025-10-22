@@ -119,6 +119,9 @@ export const TEST_METRICS = {
     used: 12 * 1024 * 1024 * 1024,  // 12GB
     free: 4 * 1024 * 1024 * 1024,   // 4GB
     percentage: 75,
+    formatted_total: '16 GB',
+    formatted_used: '12 GB',
+    formatted_free: '4 GB',
     topProcesses: [
       {
         pid: 1234,
@@ -146,7 +149,10 @@ export const TEST_METRICS = {
     total: 500 * 1024 * 1024 * 1024, // 500GB
     used: 350 * 1024 * 1024 * 1024,  // 350GB
     free: 150 * 1024 * 1024 * 1024,  // 150GB
-    percentage: 70
+    percentage: 70,
+    formatted_total: '500 GB',
+    formatted_used: '350 GB',
+    formatted_free: '150 GB'
   },
   pm2: [
     {

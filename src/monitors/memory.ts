@@ -2,6 +2,7 @@ import * as os from 'os';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { MemoryUsage, ProcessInfo } from '../types';
+import { formatBytes } from '../helpers/formatBytes';
 
 const execAsync = promisify(exec);
 
@@ -19,6 +20,9 @@ export class MemoryMonitor {
       used: usedMemory,
       free: freeMemory,
       percentage: Math.round(percentage * 100) / 100,
+      formatted_total: formatBytes(totalMemory),
+      formatted_used: formatBytes(usedMemory),
+      formatted_free: formatBytes(freeMemory),
       topProcesses
     };
   }

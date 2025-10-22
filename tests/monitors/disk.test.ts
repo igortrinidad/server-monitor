@@ -36,6 +36,9 @@ describe('DiskMonitor', () => {
       expect(result.used).toBe(375809638400);
       expect(result.free).toBe(161061273600);
       expect(result.percentage).toBeCloseTo(70, 1);
+      expect(result.formatted_total).toBe('500 GB');
+      expect(result.formatted_used).toBe('350 GB');
+      expect(result.formatted_free).toBe('150 GB');
       expect(result).not.toHaveProperty('topFolders');
     });
 
@@ -55,6 +58,9 @@ Size=500107862016`;
       expect(result.free).toBe(161061273600);
       expect(result.used).toBe(500107862016 - 161061273600);
       expect(result.percentage).toBeCloseTo(67.8, 1);
+      expect(result.formatted_total).toBe('465.76 GB');
+      expect(result.formatted_used).toBe('315.76 GB');
+      expect(result.formatted_free).toBe('150 GB');
       expect(result).not.toHaveProperty('topFolders');
     });
 
@@ -69,7 +75,10 @@ Size=500107862016`;
         total: 0,
         used: 0,
         free: 0,
-        percentage: 0
+        percentage: 0,
+        formatted_total: '0 Bytes',
+        formatted_used: '0 Bytes',
+        formatted_free: '0 Bytes'
       });
     });
 
@@ -100,6 +109,9 @@ Size=500107862016`;
       expect(result.used).toBe(536870912000); // 500GB
       expect(result.free).toBe(536870912000); // 500GB
       expect(result.percentage).toBe(50);
+      expect(result.formatted_total).toBe('1000 GB');
+      expect(result.formatted_used).toBe('500 GB');
+      expect(result.formatted_free).toBe('500 GB');
     });
 
     it('should handle malformed df output', async () => {

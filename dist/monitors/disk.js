@@ -37,6 +37,7 @@ exports.DiskMonitor = void 0;
 const child_process_1 = require("child_process");
 const util_1 = require("util");
 const os = __importStar(require("os"));
+const formatBytes_1 = require("../helpers/formatBytes");
 const execAsync = (0, util_1.promisify)(child_process_1.exec);
 class DiskMonitor {
     constructor(diskPaths = ['/']) {
@@ -56,7 +57,10 @@ class DiskMonitor {
             total: diskInfo.total,
             used: diskInfo.used,
             free: diskInfo.free,
-            percentage: Math.round(percentage * 100) / 100
+            percentage: Math.round(percentage * 100) / 100,
+            formatted_total: (0, formatBytes_1.formatBytes)(diskInfo.total),
+            formatted_used: (0, formatBytes_1.formatBytes)(diskInfo.used),
+            formatted_free: (0, formatBytes_1.formatBytes)(diskInfo.free)
         };
     }
     async getUnixDiskUsage() {
