@@ -47,6 +47,17 @@ async function testMonitor() {
     
     const cpu = await monitor.getCpuUsage();
     console.log(`CPU: ${cpu.percentage.toFixed(2)}% used`);
+    
+    const disk = await monitor.getDiskUsage();
+    console.log(`Disk: ${disk.percentage.toFixed(2)}% used (${(disk.free / 1024 / 1024 / 1024).toFixed(2)} GB free)`);
+    
+    if (disk.topFolders && disk.topFolders.length > 0) {
+      console.log('\n📁 Top disk usage by folders:');
+      disk.topFolders.slice(0, 5).forEach((folder, index) => {
+        const sizeGB = (folder.size / 1024 / 1024 / 1024).toFixed(2);
+        console.log(`   ${index + 1}. ${folder.path}: ${sizeGB} GB (${folder.percentage.toFixed(1)}%)`);
+      });
+    }
 
     // Let it run for 15 seconds to collect some data
     setTimeout(async () => {
