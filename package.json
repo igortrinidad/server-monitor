@@ -1,0 +1,59 @@
+{
+  "name": "@igortrindade/server-monitor",
+  "version": "1.0.0",
+  "description": "A comprehensive server monitoring package for Node.js applications with SQLite storage",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "watch": "tsc --watch",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --watchAll=false"
+  },
+  "keywords": [
+    "server",
+    "monitoring",
+    "performance",
+    "metrics",
+    "nodejs",
+    "sqlite",
+    "memory",
+    "cpu",
+    "disk",
+    "pm2"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/igortrinidad/server-monitor.git"
+  },
+  "author": "Igor Trindade",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/igortrinidad/server-monitor/issues"
+  },
+  "homepage": "https://github.com/igortrinidad/server-monitor#readme",
+  "dependencies": {
+    "sqlite3": "^5.1.6",
+    "pm2": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "@types/jest": "^29.5.5",
+    "typescript": "^5.2.0",
+    "ts-node": "^10.9.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
