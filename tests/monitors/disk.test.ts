@@ -25,16 +25,16 @@ describe('DiskMonitor', () => {
     it('should return correct disk usage for Unix systems', async () => {
       mockOs.platform.mockReturnValue('darwin');
       
-      // Mock df -B1 command output (returns bytes)
-      const mockDfOutput = '/dev/disk1s1 536870912000 375809638400 161061273600 70% /';
+      // Mock df -k command output for macOS (returns 1024-byte blocks)
+      const mockDfOutput = '/dev/disk1s1 524288000 367001600 157286400 70% /';
       
       mockExecAsync.mockResolvedValue({ stdout: mockDfOutput });
 
       const result = await diskMonitor.getDiskUsage();
 
-      expect(result.total).toBe(536870912000);
-      expect(result.used).toBe(375809638400);
-      expect(result.free).toBe(161061273600);
+      expect(result.total).toBe(536870912000); // 524288000 * 1024
+      expect(result.used).toBe(375809638400);  // 367001600 * 1024
+      expect(result.free).toBe(161061273600);  // 157286400 * 1024
       expect(result.percentage).toBeCloseTo(70, 1);
       expect(result.formatted_total).toBe('500 GB');
       expect(result.formatted_used).toBe('350 GB');
@@ -142,6 +142,17 @@ Size=500107862016`;
       await diskMonitor.getDiskUsage();
 
       expect(mockExecAsync).toHaveBeenCalledWith('df -B1 / | tail -1');
+    });
+
+    it('should use correct df command for macOS systems', async () => {
+      mockOs.platform.mockReturnValue('darwin');
+      
+      const mockDfOutput = '/dev/disk1s1 976562500 488281250 488281250 50% /';
+      mockExecAsync.mockResolvedValue({ stdout: mockDfOutput });
+
+      await diskMonitor.getDiskUsage();
+
+      expect(mockExecAsync).toHaveBeenCalledWith('df -k / | tail -1');
     });
   });
 });

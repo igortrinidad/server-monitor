@@ -38,13 +38,27 @@ export class DiskMonitor {
 
   private async getUnixDiskUsage(): Promise<{ total: number; used: number; free: number }> {
     try {
-      const { stdout } = await execAsync('df -B1 / | tail -1');
+      const platform = os.platform();
+      let command: string;
+      let multiplier: number;
+
+      if (platform === 'darwin') {
+        // macOS uses -k for 1024-byte blocks
+        command = 'df -k / | tail -1';
+        multiplier = 1024;
+      } else {
+        // Linux uses -B1 for 1-byte blocks
+        command = 'df -B1 / | tail -1';
+        multiplier = 1;
+      }
+
+      const { stdout } = await execAsync(command);
       const parts = stdout.trim().split(/\s+/);
       
       if (parts.length >= 4) {
-        const total = parseInt(parts[1]) || 0;
-        const used = parseInt(parts[2]) || 0;
-        const free = parseInt(parts[3]) || 0;
+        const total = (parseInt(parts[1]) || 0) * multiplier;
+        const used = (parseInt(parts[2]) || 0) * multiplier;
+        const free = (parseInt(parts[3]) || 0) * multiplier;
         
         // Validate that we got reasonable numbers
         if (total > 0) {
