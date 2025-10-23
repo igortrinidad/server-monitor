@@ -1,6 +1,6 @@
 {
   "name": "@igortrindade/server-monitor",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A comprehensive server monitoring package for Node.js applications with SQLite storage",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
